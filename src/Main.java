@@ -11,7 +11,7 @@ public class Main {
         list.add(SimpleFactoryDemo.class);//简单工厂--根据条件，返回对象
         list.add(FactoryDemo.class);//工厂模式--在简单工厂基础上抽象了factory，实现开闭原则，选择移到客户端
         list.add(StrategyDemo.class);//策略模式--在简单工厂基础上，包装对象，简化客户端调用
-        list.add(AbstractFactoryDemo.class);//抽象工厂模式--在工厂模式基础上
+        list.add(AbstractFactoryDemo.class);//抽象工厂模式--在工厂模式基础上，一个工厂可获取多个对象
         //包装对象
         list.add(ProxyDemo.class);//代理模式--控制访问
         list.add(FacadeDemo.class);//外观模式--简化调用
