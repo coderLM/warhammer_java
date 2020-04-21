@@ -6,9 +6,6 @@ import java.util.*;
  * 观察者模式
  * 目的：对象的一对多通知（解耦）
  */
-// todo
-//  1.例子中删除badObservers时间复杂度为 O(N*N),以后看其他框架是怎么优化的
-//  2.看其他EventBus、Dart中如何实现订阅的
 public class ObserverDemo extends BaseDemo {
     @Override
     public void run() {
@@ -80,6 +77,9 @@ class EventCenter {
     // return 方便判断是否detach成功
     public static boolean detach(Class eventClass, Observer observer) {
         synchronized (lock) {
+            for (Map.Entry<BuildContext, List<Observer>> entry : contextObsMap.entrySet()) {
+                entry.getValue().removeIf(o-> o==observer);
+            }
             return dealMap(false, classObsMap, eventClass, observer);
         }
     }

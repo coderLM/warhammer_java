@@ -9,30 +9,36 @@ import com.sun.corba.se.spi.orbutil.threadpool.Work;
  */
 public class ProxyDemo {
     public static void main(String[] args) {
-        WorkerProxy proxy=new WorkerProxy();
-        proxy.work();;
+        WorkerProxy proxy = new WorkerProxy();
+        proxy.work();
     }
 }
-abstract class Worker{
+
+abstract class Worker {
     public abstract void work();
 }
-class Coder extends Worker{
+
+class Coder extends Worker {
     @Override
     public void work() {
         System.out.println("coding");
     }
 }
-class WorkerProxy extends Worker{
+
+class WorkerProxy extends Worker {
     private Coder worker;
+    int count;
     @Override
     public void work() {
-        if(worker==null){
-            synchronized (this){
-                if(worker==null){
-                    worker=new Coder();
+        if (worker == null) {
+            synchronized (WorkerProxy.class) {
+                if (worker == null) {
+                    worker = new Coder();
                 }
             }
         }
         worker.work();
+        count++;
+        System.out.println("total work:" + count);
     }
 }

@@ -13,8 +13,9 @@ package design;
  * 1.不方便写子类（需要的子类爆发式增长）
  * 2.无法写子类
  */
-public class DecorateDemo {
-    public static void main(String[] args) {
+public class DecorateDemo extends BaseDemo{
+    @Override
+    public void run() {
         Person hammer = new PersonDecorateRich(new PersonDecorateHigh(new Hammer()));
         hammer.show();
     }
@@ -61,7 +62,6 @@ class PersonDecorateRich extends Person {
             this.person.show();
         }
         System.out.println("i am richer");
-
     }
 }
 

@@ -8,12 +8,8 @@ package design;
  * 1.增加了类的数量--每加一个品类就多加一个工厂类
  * 2.将选择的逻辑挪到了客户端
  */
-public class FactoryDemo {
-    public static void main(String[] args) {
-        FactoryDemo demo = new FactoryDemo();
-        demo.run();
-    }
-
+public class FactoryDemo extends BaseDemo{
+    @Override
     public void run() {
         CountFactory factoryAdd = new CountFactoryAdd();
         Count add = factoryAdd.create();
@@ -23,6 +19,7 @@ public class FactoryDemo {
         Count sub = factorySub.create();
         System.out.println("- result:" + sub.getCount(3, 1));
     }
+
 
     interface CountFactory {
         Count create();
