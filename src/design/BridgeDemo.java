@@ -11,32 +11,32 @@ package design;
 public class BridgeDemo extends BaseDemo{
     @Override
     public void run() {
-        Driver mysqlDriver=new MysqlDriver();
+        Driver mysqlDriver= new MysqlDriver();
         JDBC androidJDBC= new AndroidJDBC(mysqlDriver);
         androidJDBC.insertMag("google");
 
-        Driver oracleDriver =new OracleDriver();
+        Driver oracleDriver = new OracleDriver();
         JDBC iosJDBC = new IosJDBC(oracleDriver);
         iosJDBC.insertMag("apple");
     }
     interface Driver{
         void insertMsg(String msg);
     }
-    class MysqlDriver implements Driver{
+    static class MysqlDriver implements Driver{
 
         @Override
         public void insertMsg(String msg) {
             System.out.println("MysqlDriver insert "+msg);
         }
     }
-    class OracleDriver implements Driver{
+    static class OracleDriver implements Driver{
 
         @Override
         public void insertMsg(String msg) {
             System.out.println("OracleDriver insert "+msg);
         }
     }
-    abstract class JDBC{
+    abstract static class JDBC{
         Driver driver;
         public JDBC(Driver driver){
             this.driver=driver;
@@ -45,7 +45,7 @@ public class BridgeDemo extends BaseDemo{
             driver.insertMsg(msg);
         }
     }
-    class AndroidJDBC extends JDBC{
+    static class AndroidJDBC extends JDBC{
         public AndroidJDBC(Driver driver) {
             super(driver);
         }
@@ -59,7 +59,7 @@ public class BridgeDemo extends BaseDemo{
             System.out.println("Android extend Method");
         }
     }
-    class IosJDBC extends JDBC{
+    static class IosJDBC extends JDBC{
         public IosJDBC(Driver driver) {
             super(driver);
         }
