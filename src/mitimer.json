@@ -1,0 +1,36 @@
+{
+  "authed": [
+    "270087397"
+  ],
+  "name": null,
+  "us_id": 0,
+  "st_id": 8,
+  "setting": {
+    "enable_timer": "1",
+    "enable_push": "0",
+    "enable_timer_on": "1",
+    "on_method": "set_properties",
+    "on_filter": "cn_workday",
+    "on_param": [
+      {
+        "did": "270087397",
+        "piid": 1,
+        "siid": 2,
+        "value": true
+      }
+    ],
+    "on_time": "31 18 * * *",
+    "enable_timer_off": "0",
+    "off_method": "set_properties",
+    "off_filter": "cn_workday",
+    "off_param": [
+      {
+        "did": "270087397",
+        "piid": 1,
+        "siid": 2,
+        "value": false
+      }
+    ],
+    "off_time": "31 18 * * *"
+  }
+}

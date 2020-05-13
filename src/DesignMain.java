@@ -21,7 +21,7 @@ import java.util.List;
  * 1.用抽象构建框架，用实现扩展细节
  * 2.选择合适的设计模式，避免过度设计
  */
-public class Main {
+public class DesignMain {
     public static void main(String[] args) {
         String runClassName = "DecorateDemo";
         List<Class> list = new ArrayList<>();
