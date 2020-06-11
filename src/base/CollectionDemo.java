@@ -1,21 +1,18 @@
 package base;
 
-import com.sun.jmx.remote.internal.ArrayQueue;
+import sun.jvm.hotspot.utilities.Bits;
 
 import java.util.*;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class CollectionDemo {
     public static void main(String[] args) {
-        List<Integer> list=new ArrayList<>();
-        list.add(1);
-        list.add(2);
-        list.get(1);
-        list.iterator().forEachRemaining(element->{
-        });
-        Map<Integer,Integer> map=new HashMap<>();
+        BitSet bitSet = new BitSet();
+        bitSet.set(0);
+        bitSet.set(1);
+        bitSet.set(2);
 
-        Set<Integer> set =new HashSet<>();
+        bitSet.clear(1);
+        System.out.println(bitSet.toString());
+        System.out.println(bitSet.get(0));
     }
-
 }
