@@ -1,6 +1,6 @@
 package concurrent;
 
-public class ThreadDemo {
+public class InterruptedDemo {
     public static void main(String[] args) {
         interruptFun0();
 //        interruptFun1();
