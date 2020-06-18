@@ -3,15 +3,12 @@ package concurrent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.FutureTask;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class FutureDemo {
+public class ThreadPoolDemo {
     public static void main(String[] args) {
         String input = "/users/sm-li/flutter";
         String keywords = "flutter";
@@ -21,10 +18,11 @@ public class FutureDemo {
 //        System.out.println("input keywords");
 //         keywords = in.nextLine();
         startCount();
-        MatchCounter matchCounter = new MatchCounter(input, keywords);
-        FutureTask task = new FutureTask<>(matchCounter);
-        Thread thread = new Thread(task);
-        thread.start();
+        ThreadPoolExecutor pool = new ThreadPoolExecutor(0, Integer.MAX_VALUE,
+                5L, TimeUnit.SECONDS,
+                new SynchronousQueue<>());
+        MatchCounter2 matchCounter = new MatchCounter2(input, keywords,pool);
+        Future<Integer> task = pool.submit(matchCounter);
         Thread printThread = new Thread(() -> {
             boolean done = false;
             while (!done) {
@@ -43,8 +41,12 @@ public class FutureDemo {
             printThread.interrupt();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
+        } finally {
+            printCount();
+            System.out.println("pool largest size:::" + pool.getLargestPoolSize());
+            System.exit(1);
         }
-        printCount();
+
     }
 
     static long time;
@@ -54,46 +56,42 @@ public class FutureDemo {
     }
 
     static void printCount() {
-        System.out.println("use time:::" + (System.currentTimeMillis() - time) + " ms");
+        System.out.println("use time:::" + (System.currentTimeMillis() - time)+ " ms");
     }
 }
 
-class MatchCounter implements Callable<Integer> {
+class MatchCounter2 implements Callable<Integer> {
     private final String path;
     private final String keywords;
-    private static AtomicInteger taskCount = new AtomicInteger(0);
+    private final ExecutorService pool;
 
-    MatchCounter(String path, String keywords) {
+    MatchCounter2(String path, String keywords, ExecutorService pool) {
         this.path = path;
         this.keywords = keywords;
+        this.pool = pool;
     }
 
     @Override
     public Integer call() {
         File[] files = new File(path).listFiles();
-        List<FutureTask> futureTasks = new ArrayList<>();
+        List<Future<Integer>> futureTasks = new ArrayList<>();
         AtomicInteger count = new AtomicInteger();
         assert files != null;
         for (File file : files) {
             if (file.isDirectory()) {
-                MatchCounter matchCounter = new MatchCounter(file.getPath(), keywords);
-                FutureTask task = new FutureTask<>(matchCounter);
-                futureTasks.add(task);
-                Thread thread = new Thread(task);
-                thread.start();
+                MatchCounter2 matchCounter = new MatchCounter2(file.getPath(), keywords, pool);
+                futureTasks.add(pool.submit(matchCounter));
             } else {
                 if (search(file)) count.getAndIncrement();
             }
         }
-        taskCount.addAndGet(futureTasks.size());
         futureTasks.forEach(task -> {
             try {
-                count.addAndGet((Integer) task.get());
+                count.addAndGet(task.get());
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
         });
-//        System.out.println("threadCount:::" + threadCount.toString());
         return count.get();
     }
 
