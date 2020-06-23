@@ -1,11 +1,10 @@
 package concurrent;
 
-import java.io.IOException;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ThreadPoolDemo3 {
-    public static void main(String[] args) throws InterruptedException, IOException {
+    public static void main(String[] args) {
         int corePoolSize = 2;
         int maximumPoolSize = 4;
         long keepAliveTime = 10;
