@@ -5,9 +5,11 @@ package base;
  */
 public class Singleton {
     private volatile static Singleton instance;
+    private static Object lock = new Object();
+
     public static Singleton getInstance() {
         if (instance == null) {
-            synchronized (Singleton.class) {
+            synchronized (lock) {
                 if (instance == null) {
                     instance = new Singleton();
                 }
@@ -15,4 +17,5 @@ public class Singleton {
         }
         return instance;
     }
+    private Singleton(){}
 }

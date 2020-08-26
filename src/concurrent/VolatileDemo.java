@@ -8,9 +8,9 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Stream;
 
 public class VolatileDemo {
-    //不加 volatile 关键字  [1...,2...] 结果偏向左
-    // 加 volatile 关键字               结果右移一点(CPU缓存有更新就会刷新到内存）
-    //在add10K方法中使用同步              结果为 2...
+    //不加 volatile 关键字              [1...,2...]
+    // 加 volatile 关键字               同上
+    //在add10K方法中使用同步             结果为 2...
 //    private long count = 0;
     private AtomicLong count = new AtomicLong();
 
