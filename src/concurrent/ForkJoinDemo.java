@@ -9,12 +9,20 @@ import java.util.function.DoublePredicate;
  */
 public class ForkJoinDemo {
     public static void main(String[] args) {
-        int len = 100000;
+        int len = 1000;
         double[] values = new double[len];
         for (int i = 0; i < len; i++) {
             values[i] = Math.random();
         }
-        Counter counter = new Counter(values, 0, len, x -> x > 0.5);
+        Counter counter = new Counter(values, 0, len, x -> {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return  x > 0.5;
+        });
+        boolean end=false;
         ForkJoinPool pool = new ForkJoinPool();
         pool.invoke(counter);
         System.out.println("result:::" + counter.join());
@@ -22,7 +30,7 @@ public class ForkJoinDemo {
 }
 
 class Counter extends RecursiveTask<Integer> {
-    public static int SINGLE = 1000;
+    public static int SINGLE = 100;
     double[] values;
     int from;
     int to;
@@ -47,8 +55,20 @@ class Counter extends RecursiveTask<Integer> {
             int middle = (to + from) / 2;
             Counter left = new Counter(values, from, middle, filter);
             Counter right = new Counter(values, middle, to, filter);
-            invokeAll(left, right);
+            //写法一
+            invokeAll(left, right);//内部也只是 t2.fork()，t1.doInvoke()
             return left.join() + right.join();
+            //写法二
+//            left.fork();
+//            return right.compute()+left.join();
+            //写法三
+//            left.fork();
+//            right.fork();
+//            return right.join()+left.join();
+            //写法四 -- 错误的写法，可能会有大于4个的线程在跑
+//            left.fork();
+//            right.fork();
+//            return left.join()+right.join();
         }
     }
 }

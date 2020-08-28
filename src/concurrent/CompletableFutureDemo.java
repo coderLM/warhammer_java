@@ -1,10 +1,9 @@
 package concurrent;
 
 
-import com.sun.xml.internal.ws.api.model.wsdl.WSDLOutput;
-
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 public class CompletableFutureDemo {
@@ -12,7 +11,7 @@ public class CompletableFutureDemo {
 
     public static void main(String[] args) {
         //用两个异步(A、B)的结果去执行第三个任务(C)
-        int run = 2;
+        int run = 3;
         switch (run) {
             case 0:
                 //原始写法
@@ -35,17 +34,48 @@ public class CompletableFutureDemo {
     }
 
     private static void testCompletable() {
-        CompletableFuture future = syncMethod2().runAfterBoth(syncMethod2(), () -> {
-            System.out.println("has done:::" + list.size());
-        });
-        try {
-            System.out.println("main:::"+Thread.currentThread().getName());
-            Thread.sleep(10000);
-            future.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
+//        CompletableFuture future = syncMethod2().runAfterBoth(syncMethod2(), () -> {
+//            System.out.println("has done:::" + list.size());
+//        });
+//        try {
+//            System.out.println("main:::" + Thread.currentThread().getName());
+//            Thread.sleep(10000);
+//            future.get();
+//        } catch (InterruptedException | ExecutionException e) {
+//            e.printStackTrace();
+//        }
+        CompletableFuture<Void> f0 = CompletableFuture.runAsync(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("run 0");
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
+            }
+        });
+        CompletableFuture<Void> f1 = CompletableFuture.runAsync(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("run 1");
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        CompletableFuture<Integer> f2 = f0.thenCombine(f1, new BiFunction() {
+            @Override
+            public Object apply(Object o, Object o2) {
+                System.out.println("o:"+(o==null));
+                System.out.println("o2:"+(o2==null));
+                return 3;
+            }
+        });
+        System.out.println(f2.join());
     }
 
     private static CompletableFuture<Integer> composeMethod(int v) {
@@ -58,10 +88,9 @@ public class CompletableFutureDemo {
     }
 
     private static void useOld() {
-        CallBack callBackA = CompletableFutureDemo::dealABResult;
-        CallBack callBackB = CompletableFutureDemo::dealABResult;
-        syncMethod0(callBackA);
-        syncMethod0(callBackB);
+        CallBack callBack = CompletableFutureDemo::dealABResult;
+        syncMethod0(callBack);
+        syncMethod0(callBack);
     }
 
     private static void useFuture() {
@@ -81,8 +110,27 @@ public class CompletableFutureDemo {
             System.out.println("do list add");
             list.add(a);
             list.add(b);
+            System.out.println(1 / 0);
             return list;
-        }).thenApply(CompletableFutureDemo::doTaskC);
+        }).thenApply(CompletableFutureDemo::doTaskC)
+                .handle(new BiFunction<Integer, Throwable, Integer>() {
+                    @Override
+                    public Integer apply(Integer integer, Throwable throwable) {
+                        return -1;
+                    }
+                });
+//        .whenComplete(new BiConsumer<Integer, Throwable>() {
+//            @Override
+//            public void accept(Integer integer, Throwable throwable) {
+//                System.out.println("error:");
+//            }
+//        });
+//        .exceptionally(new Function<Throwable, Integer>() {
+//            @Override
+//            public Integer apply(Throwable throwable) {
+//                return 111;
+//            }
+//        });
         try {
             System.out.println("result:::" + cf.get());
         } catch (InterruptedException | ExecutionException e) {
