@@ -8,6 +8,9 @@ package error;
 public class ReturnDemo {
     public static void main(String[] args) {
         System.out.println(test1());
+
+        StackOverflowError so;
+        OutOfMemoryError oom;
     }
 
     private static int test0() {
@@ -38,5 +41,9 @@ public class ReturnDemo {
 //            return a;//--> print 2
         }
         return 8;
+    }
+    private static void test2() {
+        NullPointerException exception;
+
     }
 }

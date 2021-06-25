@@ -27,13 +27,16 @@ public class SemaphoreDemo {
 
     private static void usePool() {
         Runnable runnable = () -> {
-            String name = pool.execute(namedPeople -> {
-                try {
-                    Thread.sleep((long) (Math.random() * 1000));
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            String name = pool.execute(new Function<NamedPeople, String>() {
+                @Override
+                public String apply(NamedPeople namedPeople) {
+                    try {
+                        Thread.sleep((long) (Math.random() * 1000));
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    return namedPeople.getName();
                 }
-                return namedPeople.getName();
             });
             System.out.println("thread: " + Thread.currentThread().getName() + "  name is :" + name);
         };

@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class DesignMain {
     public static void main(String[] args) {
-        String runClassName = "DecorateDemo";
+        String runClassName = "OriginalDemo";
         List<Class> list = new ArrayList<>();
         //--- 类设计 ---
         list.add(FormworkDemo.class);//模板模式--提取公共方法

@@ -1,23 +1,18 @@
 package concurrent;
 
-import stream.StreamCreateDemo;
 import test_util.TimeUtil;
 
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Stream;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class VolatileDemo {
-    //不加 volatile 关键字              [1...,2...]
-    // 加 volatile 关键字               同上
-    //在add10K方法中使用同步             结果为 2...
-//    private long count = 0;
-    private AtomicLong count = new AtomicLong();
+    private volatile long count = 0;
+    private AtomicInteger atomicInteger = new AtomicInteger(0);
 
-    private synchronized void add10K() {
-        int idx = 0;
-        while (idx++ < 10000000) {
-            count.getAndAdd(1);
+    private void add10K(boolean t) {
+        while (count < 10000000) {
+            count++;
+            atomicInteger.getAndIncrement();
         }
     }
 
@@ -25,10 +20,10 @@ public class VolatileDemo {
         final VolatileDemo test = new VolatileDemo();
         // 创建两个线程，执行add()操作
         Thread th1 = new Thread(() -> {
-            test.add10K();
+            test.add10K(true);
         });
         Thread th2 = new Thread(() -> {
-            test.add10K();
+            test.add10K(false);
         });
         // 启动两个线程
         th1.start();
@@ -40,26 +35,21 @@ public class VolatileDemo {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println("count:::" + test.count.get());
-        return test.count.get();
+        System.out.println("count:::" + test.count / 10000);
+        System.out.println("atomicInteger:::" + test.atomicInteger.get());
+        return test.count;
     }
 
     public static void autoTest() {
         ArrayList<Integer> results = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 30; i++) {
             results.add((int) (calc() / 10000));
         }
         long result = results.stream().mapToInt(e -> e).sum();
-        System.out.println("main end result:" + result / 100);
+        System.out.println("main end result:" + result / 30);
     }
 
     public static void main(String[] args) {
-
         TimeUtil.countFn(VolatileDemo::autoTest);
-        //               result    time(ms)
-        //无 volatile     1177       70
-        //volatile        1171      35091
-        // synchronized   2000       78
-        //atomic          2000        9961
     }
 }

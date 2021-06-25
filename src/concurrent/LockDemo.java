@@ -11,7 +11,6 @@ public class LockDemo {
     public static void main(String[] args) {
         LockDemo demo = new LockDemo();
         demo.run();
-
     }
 
     private void run() {
@@ -30,7 +29,7 @@ public class LockDemo {
 
     }
 
-    Lock lock = new ReentrantLock();
+    ReentrantLock lock = new ReentrantLock();
     Condition condition = lock.newCondition();
 
     Runnable downRunnable = new Runnable() {

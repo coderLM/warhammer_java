@@ -12,7 +12,7 @@ public class AbstractFactoryDemo extends BaseDemo {
     public void run() {
         Factory factory = new FactoryA();//只需更改工厂，就能获得一个品类的对象
         Components engine = factory.productEngine();
-        Components aircondition =factory.productAircondition();
+        Components aircondition = factory.productAircondition();
         engine.run();
         aircondition.run();
 
