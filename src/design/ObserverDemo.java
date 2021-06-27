@@ -125,7 +125,7 @@ class EventCenter {
         }
     }
 
-    public static <P extends Object> boolean dealMap(boolean add, Map<P, List<Observer>> map, P key, Observer observer) {
+    public static <P> boolean dealMap(boolean add, Map<P, List<Observer>> map, P key, Observer observer) {
         if (map.get(key) == null) {
             if (add) {
                 map.put(key, new ArrayList<Observer>() {{

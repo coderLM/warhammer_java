@@ -38,6 +38,4 @@ public class AdapterDemo extends BaseDemo{
             System.out.println("显示图像:"+info);
         }
     }
-
-
 }
